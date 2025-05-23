@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 enum ErrorCode {
     NO_ERROR = 0,
     NOT_FOUND = 1
@@ -9,21 +11,21 @@ enum ErrorCode {
 
 class Person {
 public:
-    std::string lastName;
-    std::string firstName;
-    std::string middleName;
+    string lastName;
+    string firstName;
+    string middleName;
 
     Person() = default;
 
-    Person(const std::string& last, const std::string& first, const std::string& middle)
+    Person(const string& last, const string& first, const string& middle)
         : lastName(last), firstName(first), middleName(middle) {}
 
-    friend std::ostream& operator<<(std::ostream& os, const Person& p) {
+    friend ostream& operator<<(ostream& os, const Person& p) {
         os << p.lastName << " " << p.firstName << " " << p.middleName;
         return os;
     }
 
-    friend std::istream& operator>>(std::istream& is, Person& p) {
+    friend istream& operator>>(istream& is, Person& p) {
         is >> p.lastName >> p.firstName >> p.middleName;
         return is;
     }
@@ -32,20 +34,20 @@ public:
 class PhoneBook {
 private:
     struct Entry {
-        std::string phone;
+        string phone;
         Person person;
     };
 
-    std::vector<Entry> data;
+    vector<Entry> data;
 
 public:
     int CodeError = NO_ERROR;
 
-    void add(const std::string& phone, const Person& person) {
+    void add(const string& phone, const Person& person) {
         data.push_back({phone, person});
     }
 
-    Person operator[](const std::string& phone) {
+    Person operator[](const string& phone) {
         for (const auto& entry : data) {
             if (entry.phone == phone) {
                 CodeError = NO_ERROR;
@@ -56,27 +58,27 @@ public:
         return Person();
     }
 
-    Person operator()(const std::string& phone) {
+    Person operator()(const string& phone) {
         return (*this)[phone];
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const PhoneBook& pb) {
+    friend ostream& operator<<(ostream& os, const PhoneBook& pb) {
         for (const auto& entry : pb.data) {
             os << entry.phone << " : " << entry.person << "\n";
         }
         return os;
     }
 
-    friend std::istream& operator>>(std::istream& is, PhoneBook& pb) {
+    friend istream& operator>>(istream& is, PhoneBook& pb) {
         int n;
-        std::cout << "Введіть кількість записів: ";
+        cout << "Введіть кількість записів: ";
         is >> n;
         for (int i = 0; i < n; ++i) {
-            std::string phone;
+            string phone;
             Person person;
-            std::cout << "Введіть номер телефону: ";
+            cout << "Введіть номер телефону: ";
             is >> phone;
-            std::cout << "Введіть прізвище, ім'я, по-батькові: ";
+            cout << "Введіть прізвище, ім'я, по-батькові: ";
             is >> person;
             pb.add(phone, person);
         }
@@ -86,43 +88,43 @@ public:
 
 int main() {
     PhoneBook pb;
-    std::cin >> pb;
+    cin >> pb;
 
-    std::cout << "\nТелефонна книга:\n" << pb << std::endl;
+    cout << "\nТелефонна книга:\n" << pb << endl;
 
     while (true) {
-        std::cout << "Введіть номер телефону для пошуку (або введіть 'exit' для виходу): ";
-        std::string queryPhone;
-        std::cin >> queryPhone;
+        cout << "Введіть номер телефону для пошуку (або введіть 'exit' для виходу): ";
+        string queryPhone;
+        cin >> queryPhone;
 
         if (queryPhone == "exit") {
-            std::cout << "Вихід з програми." << std::endl;
+            cout << "Вихід з програми." << endl;
             break;
         }
 
         Person result = pb[queryPhone];
 
         if (pb.CodeError == NO_ERROR) {
-            std::cout << "Знайдено: " << result << std::endl;
+            cout << "Знайдено: " << result << endl;
         } else {
-            std::cout << "Номер телефону " << queryPhone << " не знайдено!" << std::endl;
+            cout << "Номер телефону " << queryPhone << " не знайдено!" << endl;
 
-            std::cout << "Бажаєте додати цей номер до телефонної книги? (y/n): ";
+            cout << "Бажаєте додати цей номер до телефонної книги? (y/n): ";
             char choice;
-            std::cin >> choice;
+            cin >> choice;
 
             if (choice == 'y' || choice == 'Y') {
                 Person newPerson;
-                std::cout << "Введіть прізвище, ім'я, по-батькові: ";
-                std::cin >> newPerson;
+                cout << "Введіть прізвище, ім'я, по-батькові: ";
+                cin >> newPerson;
                 pb.add(queryPhone, newPerson);
-                std::cout << "Запис додано." << std::endl;
+                cout << "Запис додано." << endl;
             }
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 
-    std::cout << "Фінальна телефонна книга:\n" << pb << std::endl;
+    cout << "Фінальна телефонна книга:\n" << pb << endl;
 
     return 0;
 }
